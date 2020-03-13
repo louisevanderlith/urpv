@@ -21,7 +21,7 @@ type Clienter interface {
 	GetName() string
 	GetOrigin() string
 	GetCallback() string
-	Validate(rs ResourceStore, t Tokener) (int, interface{})
+	Validate(rs ResourceStore, t Tokener) error
 }
 
 type Storer interface {
