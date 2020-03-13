@@ -24,16 +24,28 @@ type Clienter interface {
 	Validate(rs ResourceStore, t Tokener) error
 }
 
+type Userer interface {
+	GetUsername() string
+	IsVerified() bool
+	ConfirmPassword(password string) bool
+	GetRequestedClaims(claims ...string) map[string]string
+}
+
 type Storer interface {
 	GetResourceStore() ResourceStore
 	GetClientStore() ClientStore
+	GetUserStore() UserStore
 }
 
 type ResourceStore interface {
 	GetResources(name ...string) []Resourcer
-	//CreateResource(resc Resourcer) error
 }
 
 type ClientStore interface {
-	GetClient(name, origin string) Clienter
+	GetClient(name string) Clienter
+}
+
+type UserStore interface {
+	Login(username, password string) Userer
+	GetClaimValue(userKey string, claims ...string) map[string]string
 }

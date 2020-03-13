@@ -71,7 +71,7 @@ func TestIntrospect_ExpiredToken_MustBe_UnAuthorized(t *testing.T) {
 	}
 
 	tkn := getExpiredToken(&kys.PublicKey)
-	_, err = Introspect("simple.localhost", tkn, kys, NewFakeStore())
+	_, err = Introspect(tkn, kys, NewFakeStore(), "client_info")
 
 	if err == nil {
 		t.Error("expected error")
@@ -93,7 +93,7 @@ func TestIntrospect_NonValidClaims_MustBe_UnAuthorized(t *testing.T) {
 	}
 
 	tkn := getInvalidToken(&kys.PublicKey)
-	_, err = Introspect("user.localhost", tkn, kys, NewFakeStore())
+	_, err = Introspect(tkn, kys, NewFakeStore(), "user_info")
 
 	if err == nil {
 		t.Error("expected error")
@@ -115,7 +115,7 @@ func TestIntrospect_ValidToken_MustBe_Authorized(t *testing.T) {
 	}
 
 	tkn := getValidToken(&kys.PublicKey)
-	claims, err := Introspect("user.localhost", tkn, kys, NewFakeStore())
+	claims, err := Introspect(tkn, kys, NewFakeStore(), "user_info")
 
 	if err != nil {
 		t.Error(err)

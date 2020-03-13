@@ -3,10 +3,11 @@ package urpv
 import (
 	"crypto/rsa"
 	"github.com/pkg/errors"
+	"log"
 )
 
 //Introspect returns all 'granted' claims contained within the access_code
-func Introspect(origin string, raw []byte, privK *rsa.PrivateKey, s Storer) (map[string]string, error) {
+func Introspect(raw []byte, privK *rsa.PrivateKey, s Storer, resources ...string) (map[string]string, error) {
 	if len(raw) == 0 {
 		return nil, errors.New("no token")
 	}
@@ -21,7 +22,15 @@ func Introspect(origin string, raw []byte, privK *rsa.PrivateKey, s Storer) (map
 		return nil, errors.New("invalid client_id")
 	}
 
-	clnt := s.GetClientStore().GetClient(toknr.GetClaim("client_id"), origin)
+	rsrc := s.GetResourceStore().GetResources(resources...)
+
+	if len(rsrc) == 0 {
+		log.Println(resources, "not found")
+		return nil, errors.New("invalid resource")
+	}
+
+	clntId := toknr.GetClaim("client_id")
+	clnt := s.GetClientStore().GetClient(clntId, )
 
 	if clnt == nil {
 		return nil, errors.New("invalid client")
