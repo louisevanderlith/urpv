@@ -1,20 +1,16 @@
 package urpv
 
-import (
-	"net/http"
-)
-
 type client struct {
-	Name     string
+	Name      string
 	Resources []string
-	Origin   string
+	Origin    string
 }
 
 func NewClient(name, origin string, resources []string) Clienter {
 	return client{
-		Name:     name,
+		Name:      name,
 		Resources: resources,
-		Origin:   origin,
+		Origin:    origin,
 	}
 }
 
@@ -26,15 +22,24 @@ func (c client) GetOrigin() string {
 	return c.Origin
 }
 
+func (c client) GetResources() []string {
+	return c.Resources
+}
+
 func (c client) GetCallback() string {
 	return c.Origin + "/signin"
 }
 
-func (c client) Validate(rs ResourceStore, t Tokener) (int, interface{}) {
-	// fetch client by name
-	// validate session endpoint matches
-	// does audience require a user? ---> redirect
-	//audience := rs.GetResources(c.Audience...)
+func (c client) Validate(rs ResourceStore, t Tokener) error {
+	rr := rs.GetResources(c.GetResources()...)
 
-	return http.StatusOK, nil
+	for _, rsc := range rr {
+		err := rsc.ValidateCaller(t)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -9,6 +9,7 @@ type resource struct {
 	Name     string
 	Requires []string //scopes required
 }
+
 func (r resource) GetName() string {
 	return r.Name
 }

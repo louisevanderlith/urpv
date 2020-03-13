@@ -26,7 +26,7 @@ type fakeClientStore struct {
 
 func newFakeClientStore() ClientStore {
 	clients := []Clienter{
-		NewClient("urpv_simpl", "simple.localhost", []string{"client_info"}),
+		NewClient("urpv_simple", "simple.localhost", []string{"client_info"}),
 		NewClient("urpv_user", "user.localhost", []string{"user_info"}),
 	}
 
@@ -53,6 +53,13 @@ func newFakeResourceStore() ResourceStore {
 			Name: "client_info",
 			Requires: []string{
 				"client_id",
+			},
+		},
+		resource{
+			Name: "user_info",
+			Requires: []string{
+				"username",
+				"email",
 			},
 		},
 	}
